@@ -1,0 +1,104 @@
+import { EditorContent, useCurrentEditor, useEditor, useEditorState } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Link from '@tiptap/extension-link';
+import React, { useState } from 'react';
+import DOMPurify from 'dompurify';
+import './tiptaptest.css';
+import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
+import Image from '@tiptap/extension-image';
+import Paragraph from '@tiptap/extension-paragraph';
+import Text from '@tiptap/extension-text';
+import ImageResize from 'tiptap-extension-resize-image';
+
+const TiptapTest2 = () => {
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      Link.configure({ openOnClick: false }),
+      ImageResize.configure({
+        minWidth: 100, // Minimum width in pixels
+        maxWidth: 800, // Maximum width in pixels
+      }),
+    ],
+    content: '<p>여기에 글<a target="_blank" rel="noopener noreferrer nofollow" href="https://www.naver.com/">ㅇㅇㅇ</a>을 작성하세요.</p>',
+  })
+
+  const [htmlOutput, setHtmlOutput] = useState('');
+
+  //에디터 상태값변경 (리랜더링)
+  const { isLinkActive } = useEditorState({
+    editor,
+    selector: (ctx) => ({ isLinkActive: ctx.editor?.isActive('link') ?? false }),
+  });
+
+  // containerstyle(이미지 정렬/크기 정보)을 실제 style로 옮긴 뒤 XSS 방지
+  const sanitizedData = () => {
+    // DOMPurify 이전에 먼저 처리 (containerstyle → style 변환)
+    const raw = new DOMParser().parseFromString(htmlOutput, 'text/html');
+    raw.querySelectorAll('img[containerstyle]').forEach(img => {
+      const containerStyle = img.getAttribute('containerstyle');
+      const figure = img.closest('figure');
+      console.log('[preview] containerstyle:', containerStyle, '| figure:', figure);
+      if (containerStyle) {
+        if (figure) {
+          figure.setAttribute('style', containerStyle);
+        } else {
+          img.setAttribute('style', containerStyle);
+        }
+      }
+      img.removeAttribute('containerstyle');
+      img.removeAttribute('wrapperstyle');
+    });
+    const processed = raw.body.innerHTML;
+    console.log('[preview] processed HTML:', processed);
+    return { __html: DOMPurify.sanitize(processed) };
+  };
+
+  //link 토글
+  const toggleLink = () => {
+    if (!editor) return;
+
+    if (editor.isActive('link')) {
+      editor.chain().focus().unsetLink().run();
+    } else {
+      const url = window.prompt('URL을 입력하세요:');
+      if (!url) return;
+      editor.chain().focus().setLink({ href: url }).run();
+    }
+  };
+
+  const addImage = () => {
+    const url = window.prompt('URL')
+
+    if (url) {
+      editor.chain().focus().setImage({ src: url }).run()
+    }
+  }
+
+  return (
+    <div>
+      <button onClick={() => editor.chain().focus().toggleBold().run()}> Bold </button>
+      <button onClick={() => editor.chain().focus().toggleItalic().run()}> Italic </button>
+      <button onClick={addImage}> 이미지 추가 </button>
+
+      <button onClick={toggleLink} style={{ fontWeight: isLinkActive ? 'bold' : 'normal' }}>
+        링크
+      </button>
+      <button onClick={() => console.log(editor.getJSON())}>마침</button>
+      <button onClick={() => { console.log(editor.getHTML()); setHtmlOutput(editor.getHTML()); }}>마침(미리보기)</button>
+      <EditorContent editor={editor} />
+      {/* <FloatingMenu editor={editor}>flt</FloatingMenu>
+      <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu> */}
+
+      {htmlOutput && (
+        <div style={{ marginTop: '16px', border: '1px solid #ccc', borderRadius: '4px', padding: '12px' }}>
+          <div style={{ fontSize: '12px', color: '#888', marginBottom: '8px' }}>미리보기</div>
+          <div className="preview-content" dangerouslySetInnerHTML={sanitizedData()} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default TiptapTest2;

@@ -1,0 +1,12 @@
+tiptap 공식 문서 : https://tiptap.dev/docs/editor/extensions/nodes
+코드 예시 : https://codesandbox.io/p/sandbox/tiptap-keulribbodeu-imiji-butyeoneohgi-gangyisil-kodeurang-gateungeo-tm8m6s?file=%2Fsrc%2FTiptap.js
+이미지 리사이즈 추가 : yarn add tiptap-extension-resize-image
+이미지 추가 yarn add @tiptap/extension-image
+
+팁탭 추가 : yarn add @tiptap/react @tiptap/pm @tiptap/starter-kit
+yarn add @tiptap/extension-paragraph
+yarn add @tiptap/extension-text
+yarn add @tiptap/extension-document
+
+
+돔 퓨리티 추가 : yarn add dompurify

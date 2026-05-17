@@ -1,0 +1,34 @@
+.tiptap,
+.ProseMirror {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 8px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.tiptap:focus,
+.ProseMirror:focus {
+  border-color: #7c3aed;
+  box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.preview-content figure {
+  margin: 0;
+  width: fit-content;
+}
+
+/* 크기 미조절 이미지: 에디터처럼 컨테이너 100% 채우되 800px 초과 방지 */
+.preview-content img {
+  display: block;
+  width: 100%;
+  max-width: 800px;
+  min-width: 100px;
+}
+
+/* 크기 조절 or 정렬된 이미지: 인라인 style이 있으면 CSS width 무시 */
+.preview-content img[style] {
+  width: unset;
+  max-width: 800px;
+  min-width: 100px;
+}

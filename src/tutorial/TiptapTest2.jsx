@@ -1,7 +1,7 @@
 import { EditorContent, useCurrentEditor, useEditor, useEditorState } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DOMPurify from 'dompurify';
 import './tiptaptest.css';
 import { BubbleMenu, FloatingMenu } from '@tiptap/react/menus';
@@ -9,6 +9,7 @@ import Image from '@tiptap/extension-image';
 import Paragraph from '@tiptap/extension-paragraph';
 import Text from '@tiptap/extension-text';
 import ImageResize from 'tiptap-extension-resize-image';
+import styled from 'styled-components';
 
 const TiptapTest2 = () => {
 
@@ -20,8 +21,10 @@ const TiptapTest2 = () => {
         minWidth: 100, // Minimum width in pixels
         maxWidth: 800, // Maximum width in pixels
       }),
+      Paragraph,
+      Text
     ],
-    content: '<img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSogEAHcqTOeRWDup74fbieq6wv3UV1TBGjbQ&amp;s" width="800" style="width: 800px; margin: 0px auto;"><p>여기에 글<a target="_blank" rel="noopener noreferrer nofollow" href="https://www.naver.com/">ㅇㅇㅇ</a>을 작성하세요.</p>',
+    content: '<p>내용</p><p></p><p></p><p>ㅇㅇ</p>',
   })
 
   const [htmlOutput, setHtmlOutput] = useState('');
@@ -39,7 +42,7 @@ const TiptapTest2 = () => {
     raw.querySelectorAll('img[containerstyle]').forEach(img => {
       const containerStyle = img.getAttribute('containerstyle');
       const figure = img.closest('figure');
-      console.log('[preview] containerstyle:', containerStyle, '| figure:', figure);
+      // console.log('[preview] containerstyle:', containerStyle, '| figure:', figure);
       if (containerStyle) {
         if (figure) {
           figure.setAttribute('style', containerStyle);
@@ -50,6 +53,7 @@ const TiptapTest2 = () => {
       img.removeAttribute('containerstyle');
       img.removeAttribute('wrapperstyle');
     });
+
     const processed = raw.body.innerHTML;
     console.log('[preview] processed HTML:', processed);
     return { __html: DOMPurify.sanitize(processed) };
@@ -86,8 +90,10 @@ const TiptapTest2 = () => {
         링크
       </button>
       <button onClick={() => console.log(editor.getJSON())}>마침</button>
-      <button onClick={() => { console.log(editor.getHTML()); setHtmlOutput(editor.getHTML()); }}>마침(미리보기)</button>
+      <button onClick={() => { setHtmlOutput(editor.getHTML()); }}>마침(미리보기)</button>
+
       <EditorContent editor={editor} />
+
       {/* <FloatingMenu editor={editor}>flt</FloatingMenu>
       <BubbleMenu editor={editor}>This is the bubble menu</BubbleMenu> */}
 
@@ -100,5 +106,10 @@ const TiptapTest2 = () => {
     </div>
   );
 };
+
+const Wrapper = styled.div`
+  width: 720px;
+  overflow: scroll;
+`
 
 export default TiptapTest2;

@@ -5,12 +5,23 @@
   padding: 8px;
   outline: none;
   transition: border-color 0.2s;
+
+  width: 720px;
+  height: 720px;
+  overflow: auto;
+
+  border-radius: 0px 0px 15px 15px
 }
 
 .tiptap:focus,
 .ProseMirror:focus {
   border-color: #7c3aed;
   box-shadow: 0 0 0 2px rgba(124, 58, 237, 0.2);
+}
+
+.preview-content p {
+  margin: 0;
+  min-height: 2em;
 }
 
 .preview-content figure {

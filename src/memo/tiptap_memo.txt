@@ -8,5 +8,6 @@ yarn add @tiptap/extension-paragraph
 yarn add @tiptap/extension-text
 yarn add @tiptap/extension-document
 
+팁탭 전체 추가 : yarn add @tiptap/react @tiptap/pm @tiptap/starter-kit
 
 돔 퓨리티 추가 : yarn add dompurify
